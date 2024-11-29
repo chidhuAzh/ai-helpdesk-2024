@@ -8,16 +8,17 @@ import Box from '@mui/material/Box';
 
 // Define the columns for the DataGrid
 const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'title', headerName: 'Title', width: 200 },
-  { field: 'body', headerName: 'Body', width: 300 },
-  { field: 'priority', headerName: 'Priority', width: 130 },
-  { field: 'category', headerName: 'Category', width: 150 },
-  { field: 'department', headerName: 'Department', width: 150 },
+  { field: 'id', headerName: 'ID', width: 70, flex: 1 },
+  { field: 'title', headerName: 'Title', width: 200, flex: 2 },
+  { field: 'body', headerName: 'Description', width: 300, flex: 3 },
+  { field: 'priority', headerName: 'Priority', width: 130, flex: 1 },
+  { field: 'category', headerName: 'Category', width: 150, flex: 1 },
+  { field: 'department', headerName: 'Department', width: 150, flex: 1 },
   {
     field: 'status',
     headerName: 'Status',
     width: 130,
+    flex: 1,
     renderCell: (params) => {
       let color;
       switch (params.value) {
@@ -49,11 +50,11 @@ const columns = [
 ];
 
 // Client component to display the DataGrid
-const TicketList = ({ tickets,role }) => {
+const TicketList = ({ tickets, role }) => {
   // console.log("tickets>>>", tickets[0].status);
-  
+
   const router = useRouter();
-  console.log("role in list pafe",role);
+  console.log("role in list pafe", role);
   const roleName = role ? role : ''
   // Check if tickets is def  ined and is an array
   const rows = Array.isArray(tickets) ? tickets.map(ticket => ({
@@ -63,7 +64,7 @@ const TicketList = ({ tickets,role }) => {
     priority: ticket.priority,
     category: ticket.category,
     department: ticket.department,
-    status: ticket.status,  
+    status: ticket.status,
   })) : []; // Default to an empty array if tickets is not valid
 
   const columnsWithActions = [
@@ -74,10 +75,10 @@ const TicketList = ({ tickets,role }) => {
         headerName: 'Actions',
         width: 100,
         renderCell: (params) => (
-          <Button 
+          <Button
             onClick={() => {
               router.push(`/tickets/edit/${params.row.id}`); // Use the router variable
-            }} 
+            }}
             variant="outlined"
             size="small"
           >
@@ -90,23 +91,25 @@ const TicketList = ({ tickets,role }) => {
 
   return (
     <Paper sx={{ height: 400, width: '100%' }}>
-      <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ marginLeft: 3, marginRight: 3   }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ marginLeft: 3, marginRight: 3, marginTop: 2 }}>
         <h2 style={{ marginTop: 5 }}>Tickets</h2>
-        <Button 
+        <Button
           className="btn-primary"
           onClick={() => router.push('/tickets/create')}
           sx={{ marginLeft: 'auto', marginTop: 2 }}
         >
           New Ticket
-        </Button> 
+        </Button>
       </Box>
-      <DataGrid
-        rows={rows}
-        columns={columnsWithActions} // Use the updated columns
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{ border: 0 }}
-      />
+      <div style={{margin: '0 25px'}}>
+        <DataGrid
+          rows={rows}
+          columns={columnsWithActions} // Use the updated columns
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          sx={{ border: 0 }}
+        />
+      </div>  
     </Paper>
   );
 };

@@ -8,7 +8,7 @@ const fetchTickets = async () => {
   const { data, error } = await supabase
     .from("tickets")
     .select('id, created_at, status, priority, email_sent') // Specify the fields to select
-    .eq('status', 'open'); // Filter to only fetch tickets with status 'open'
+    .eq('status', 'Open'); // Filter to only fetch tickets with status 'open'
   if (error) {
     console.error('Error fetching tickets:', error);
     return [];
@@ -19,7 +19,7 @@ const fetchTickets = async () => {
 // Function to check SLA conditions and send reminders
 const checkSLA = async () => {
   const tickets = await fetchTickets(); // Fetch tickets
-  tickets.forEach(async ticket => { // Make the callback async
+  for (const ticket of tickets) { // Use for...of instead of forEach
     const currentTime = new Date();
     const createdTime = new Date(ticket.created_at);
     const timeDiff = (currentTime - createdTime) / (1000 * 60 * 60);
@@ -36,7 +36,7 @@ const checkSLA = async () => {
         await supabase.from("tickets").update({ email_sent: True }).eq('id', ticket.id); // Update email_sent to true
       }
     }
-  });
+  }
 };
 
 // Function to start SLA checking
