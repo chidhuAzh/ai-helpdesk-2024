@@ -1,10 +1,13 @@
 "use client"
+
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';  
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import ScreenShare from '../../components/ScreenShare'
+import ScreenShareReceiver from '../../components/ScreenReceiver'
 
 // Define the columns for the DataGrid
 const columns = [
@@ -101,6 +104,16 @@ const TicketList = ({ tickets, role }) => {
           New Ticket
         </Button>
       </Box>
+      {roleName === 'User' && (
+        <div>
+          <ScreenShare/>
+        </div>
+      )}
+      {roleName === 'IT Team' && (
+        <div>
+        <ScreenShareReceiver/>
+        </div>
+      )}
       <div style={{margin: '0 25px'}}>
         <DataGrid
           rows={rows}
