@@ -61,12 +61,17 @@ const Navbar = async ({ roleName, user }) => {
             )}
             {roleName === 'User' && (
                 <Link href="/screenShare" className="hover:text-gray-300" >
-                User Screen Share
+                Share Screen
+                </Link>
+            )}
+            {roleName === 'IT Team' && (
+                <Link href="/itTeamDashboard" className="hover:text-gray-300" >
+                IT Dashboard
                 </Link>
             )}
              {roleName === 'IT Team' && (
                 <Link href="/screenReceiver" className="hover:text-gray-300" >
-                User View Share
+                  View Screen
                 </Link>
             )}
           </div>

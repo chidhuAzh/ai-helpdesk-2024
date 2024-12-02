@@ -104,7 +104,7 @@ const TicketList = ({ tickets, role }) => {
           New Ticket
         </Button>
       </Box>
-      {roleName === 'User' && (
+      {/* {roleName === 'User' && (
         <div>
           <ScreenShare/>
         </div>
@@ -113,7 +113,7 @@ const TicketList = ({ tickets, role }) => {
         <div>
         <ScreenShareReceiver/>
         </div>
-      )}
+      )} */}
       <div style={{margin: '0 25px'}}>
         <DataGrid
           rows={rows}
