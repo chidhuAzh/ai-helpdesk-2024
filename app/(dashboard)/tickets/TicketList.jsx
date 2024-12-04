@@ -13,7 +13,7 @@ import ScreenShareReceiver from '../../components/ScreenReceiver'
 const columns = [
   { field: 'id', headerName: 'ID', width: 70, flex: 1 },
   { field: 'title', headerName: 'Title', width: 200, flex: 2 },
-  { field: 'body', headerName: 'Description', width: 300, flex: 3 },
+  { field: 'body', headerName: 'Description', width: 250, flex: 3 },
   { field: 'priority', headerName: 'Priority', width: 130, flex: 1 },
   { field: 'category', headerName: 'Category', width: 150, flex: 1 },
   { field: 'department', headerName: 'Department', width: 150, flex: 1 },
@@ -54,7 +54,7 @@ const columns = [
 
 // Client component to display the DataGrid
 const TicketList = ({ tickets, role }) => {
-  // console.log("tickets>>>", tickets[0].status);
+  // console.log("tickets 577777777777777777>>>", tickets);
 
   const router = useRouter();
   console.log("role in list pafe", role);
@@ -68,11 +68,23 @@ const TicketList = ({ tickets, role }) => {
     category: ticket.category,
     department: ticket.department,
     status: ticket.status,
+    user_email:ticket.user_email
   })) : []; // Default to an empty array if tickets is not valid
 
   const columnsWithActions = [
     ...columns, // Include all columns
-    ...(roleName === 'Admin' ? [ // Check if roleName is 'Admin'
+    ...(roleName === 'Admin' || roleName === 'IT Team' ? [ // Check if roleName is 'Admin' or 'IT Team'
+      {
+        field: 'user_email', // New column for user email
+        headerName: 'Created By',
+        width: 200,
+        flex: 1,
+        renderCell: (params) => (
+          <div style={{ textAlign: 'center' }}>
+            {params.row.user_email} {/* Display user email */}
+          </div>
+        ),
+      },
       {
         field: 'actions',
         headerName: 'Actions',
@@ -89,7 +101,7 @@ const TicketList = ({ tickets, role }) => {
           </Button>
         ),
       }
-    ] : []), // If not Admin, do not include the actions column
+    ] : []), // If not Admin or IT Team, do not include the actions column
   ];
 
   return (

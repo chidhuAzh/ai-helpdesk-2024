@@ -20,7 +20,6 @@ export async function POST(req) {
     .from("tickets")
     .insert({
       ...ticket,
-      user_email: 'karthikeyan.shanmugam@triventsys.com',
     })
     .select()
     .single();

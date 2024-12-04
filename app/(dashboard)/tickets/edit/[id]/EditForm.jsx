@@ -19,7 +19,7 @@ export default function CreateForm({ ticketId }) {
   const router = useRouter();
   const ticket_id = ticketId ? ticketId : "";
   console.log("ticket_id>>>>", ticket_id);
-  
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [priority, setPriority] = useState("low");
@@ -33,18 +33,21 @@ export default function CreateForm({ ticketId }) {
   const [asigned_to, setAssignedTo] = useState("");
   const [status, setStatus] = useState("Open");
   const [ticketStatusComment, setTicketStatusComment] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
       const { data, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('id', ticket_id) 
+        .from("tickets")
+        .select("*")
+        .eq("id", ticket_id)
         .single(); // Get a single record
 
       if (error) {
         console.error("Error fetching ticket details:", error);
       } else {
+        console.log("dsa",data);
+        
         // Assuming the ticket data structure matches your state
         setTitle(data.title || "");
         setBody(data.body || "");
@@ -56,6 +59,7 @@ export default function CreateForm({ ticketId }) {
         setAssignedTo(data.asigned_to || "");
         setStatus(data.status || "Open");
         setTicketStatusComment(data.ticket_status_comment || "");
+        setUserEmail(data.user_email )
       }
     };
 
@@ -64,7 +68,7 @@ export default function CreateForm({ ticketId }) {
 
   const handleSubmit = async (e) => {
     console.log("innn submit");
-    
+
     e.preventDefault();
     setIsLoading(true);
 
@@ -90,7 +94,7 @@ export default function CreateForm({ ticketId }) {
       asigned_to,
       status,
       ticket_status_comment: ticketStatusComment,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     // Create the ticket in the database
@@ -102,28 +106,31 @@ export default function CreateForm({ ticketId }) {
     // });
 
     // Update the existing ticket in the database
-    const res = await fetch(`${location.origin}/api/tickets/${ticket_id}`, { // Use ticket_id for updating
+    const res = await fetch(`${location.origin}/api/tickets/${ticket_id}`, {
+      // Use ticket_id for updating
       method: "PUT", // Change method to PUT for updating
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTicket),
     });
-    console.log("res --->",res);
-    
+    console.log("res --->", res);
+
     // Check if the response is ok and has content
     if (res.ok) {
-      console.log("dddddddddddddddddddddddd 112");  
+      console.log("dddddddddddddddddddddddd 112");
       const json = await res.json(); // Parse JSON only if the response is ok
       router.push("/tickets");
       router.refresh();
+      await sendEmail(userEmail); // Assuming user_email is part of the response
+
       if (json.error) {
         console.log(json.error.message);
         console.log(json.error);
       }
-      console.log("sssssssssss",json.data);
-      
+      console.log("sssssssssss", json.data);
+
       // if (json.data) {
       //   console.log("dddddd sasdsdsd");
-        
+
       //   // Update the ticket in Supabase after creation
       //   const { error: updateError } = await supabase
       //     .from('tickets')
@@ -141,18 +148,44 @@ export default function CreateForm({ ticketId }) {
       //     })
       //     .eq('id', json.data.id); // Assuming json.data.id contains the created ticket's ID
       //   console.log("line 134 innnnnnnnnnnnnnnnn");
-        
+
       //   if (updateError) {
       //     console.error("Error updating ticket in Supabase:", updateError);
       //   }
       //   console.log("update done in 138");
-        
+
       //   router.refresh();
       //   router.push("/tickets");
       // }
-    } 
-    else {
+    } else {
       console.error("Failed to update ticket:", res.status, res.statusText);
+    }
+  };
+
+  const sendEmail = async (userEmail) => {
+    const emailData = {
+      to: userEmail,
+      subject: 'Ticket Closed',
+      text: 'Your ticket is closed. If you need any assistance, please reach out to the IT team.'
+    };
+
+    try {
+      const response = await fetch('/api/status-closed-email', { // Replace with your actual API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error sending email: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Email sent successfully: 186 ->', result);
+    } catch (error) {
+      console.error('Failed to send email:', error);
     }
   };
 
@@ -195,18 +228,18 @@ export default function CreateForm({ ticketId }) {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth margin="normal">
-              <InputLabel>Title</InputLabel>
               <TextField
+                label="Title"
                 required
                 onChange={(e) => setTitle(e.target.value)}
                 value={title}
               />
             </FormControl>
-          </Grid> 
+          </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth margin="normal">
-              <InputLabel>Description</InputLabel>
               <TextField
+                label="Description"
                 required
                 multiline
                 onChange={(e) => setBody(e.target.value)}
@@ -332,8 +365,8 @@ export default function CreateForm({ ticketId }) {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth margin="normal">
-              <InputLabel>Ticket Status Comment</InputLabel>
               <TextField
+                label="Ticket Status Comment"
                 multiline
                 onChange={(e) => setTicketStatusComment(e.target.value)}
                 value={ticketStatusComment}

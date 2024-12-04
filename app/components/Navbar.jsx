@@ -69,7 +69,7 @@ const Navbar = async ({ roleName, user }) => {
                 IT Dashboard
                 </Link>
             )}
-             {roleName === 'IT Team' && (
+             {roleName === 'IT Team' || roleName === 'Admin'&& (
                 <Link href="/screenReceiver" className="hover:text-gray-300" >
                   View Screen
                 </Link>

@@ -42,7 +42,7 @@ export default function CreateForm({ users: propUsers }) {
       data: { user },
     } = await supabase.auth.getUser();
     const userEmail = user?.email;
-    // console.log('454444444444444444444',userEmail)
+    console.log('form ->454444444444444444444',userEmail)
 
     const description = await getOpenAIDescription(title, body);
     console.log("Generated Description:", description);
@@ -60,6 +60,7 @@ export default function CreateForm({ users: propUsers }) {
       asigned_to,
       status,
       updated_at: new Date().toISOString(),
+      user_email:userEmail
     };
 
     const res = await fetch(`${location.origin}/api/tickets`, {
